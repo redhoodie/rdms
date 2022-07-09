@@ -3,12 +3,21 @@ GEM
   specs:
     ast (2.4.2)
     chronic (0.10.2)
+    coderay (1.1.3)
+    concurrent-ruby (1.1.10)
     diff-lcs (1.5.0)
     json (2.6.2)
+    lockfile (2.1.3)
+    method_source (1.0.0)
+    net-ping (2.0.8)
     parallel (1.22.1)
     parser (3.1.2.0)
       ast (~> 2.4.1)
+    pry (0.14.1)
+      coderay (~> 1.1)
+      method_source (~> 1.0)
     rainbow (3.1.1)
+    rake (13.0.6)
     regexp_parser (2.5.0)
     rexml (3.2.5)
     rspec (3.11.0)
@@ -45,6 +54,11 @@ PLATFORMS
   x86_64-linux
 
 DEPENDENCIES
+  concurrent-ruby
+  lockfile
+  net-ping
+  pry
+  rake (~> 13.0)
   rspec (~> 3.11.0)
   rubocop (~> 1.31)
   whenever (~> 1.0)
