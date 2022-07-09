@@ -30,7 +30,7 @@ class Check < JsonObject
     #   - [x] ping host
     #   - [x] 2XX HTTP / HTTPS
     # - [ ] Notify
-    # - [ ] Run Command
+    # - [x] Run Command
 
     if stage == :check_if_failed && !last_run_success
       @@logger.debug("Check(#{id})::#{__method__}(#{stage})")
@@ -107,7 +107,7 @@ class Check < JsonObject
   def check_http
     @@logger.debug("Check(#{id})::#{__method__}")
 
-    valid_exceptions = [:unauthorized]
+    valid_exceptions = [:unauthorized, :'method not allowed']
     ping = Net::Ping::HTTP.new(host)
 
     result = ping.ping?
