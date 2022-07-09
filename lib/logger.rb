@@ -18,6 +18,7 @@ class Logger
 
   def initialize(options = {})
     @options = DEFAULT_OPTIONS.merge(options)
+    rotate
   end
 
   LOG_LEVELS.each do |level|
@@ -52,5 +53,16 @@ class Logger
     message_level_i = LOG_LEVELS.find_index(message_level)
 
     message_level_i >= config_level_i
+  end
+
+  def rotate
+    log_file_days_old = (Time.now - File.stat(LOGGER_FILE).mtime).to_i / 86_400.0
+    return if log_file_days_old < 1.0
+
+    log_path = File.dirname(LOGGER_FILE)
+    log_file_name = File.basename(LOGGER_FILE)
+    rotated_file_name = "#{log_path}/#{Time.now.utc}-#{log_file_name}"
+    FileUtils.move(LOGGER_FILE, rotated_file_name)
+    `gzip '#{rotated_file_name}'`
   end
 end
