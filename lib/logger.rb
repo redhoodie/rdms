@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'date'
+
 # Handle logging
 class Logger
   LOGGER_FILE = './log/logger.log'
@@ -56,13 +58,22 @@ class Logger
   end
 
   def rotate
-    log_file_days_old = (Time.now - File.stat(LOGGER_FILE).mtime).to_i / 86_400.0
-    return if log_file_days_old < 1.0
+    return unless log_file_age_days > 1.0
 
     log_path = File.dirname(LOGGER_FILE)
     log_file_name = File.basename(LOGGER_FILE)
-    rotated_file_name = "#{log_path}/#{Time.now.utc}-#{log_file_name}"
+    rotated_file_name = "#{log_path}/#{log_file_ctime.utc}-#{log_file_name}"
     FileUtils.move(LOGGER_FILE, rotated_file_name)
     `gzip '#{rotated_file_name}'`
+  end
+
+  def log_file_ctime
+    DateTime.parse(File.open(LOGGER_FILE).first.split("\t").first).to_time
+  rescue StandardError
+    File.stat(LOGGER_FILE).ctime
+  end
+
+  def log_file_age_days
+    (Time.now - log_file_ctime.to_date.to_time).to_i / 86_400.0
   end
 end
